@@ -50,6 +50,7 @@ void Maze::drawMaze() {
     }
     setfillcolor(WHITE);
     solidrectangle(0, 0, CELL_SIZE, CELL_SIZE); // Æðµã
+    setfillcolor(GREEN);
     solidrectangle((cols - 1) * CELL_SIZE, (rows - 1) * CELL_SIZE, cols * CELL_SIZE, rows * CELL_SIZE); // ÖÕµã
 }
 

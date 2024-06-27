@@ -16,8 +16,12 @@ void UI::drawUI() {
     outtextxy(width + 60, 165, _T("µçÄÔÍæ"));
 
     solidrectangle(width + 20, 250, width + 180, 300);
-    outtextxy(width + 60, 265,_T( "Íæ¼ÒÍæ"));
+    outtextxy(width + 60, 265, _T("Íæ¼ÒÍæ"));
 
     solidrectangle(width + 20, 350, width + 180, 400);
     outtextxy(width + 60, 365, _T("ÍË³öÓÎÏ·"));
+}
+
+bool UI::isButtonClicked(int mouseX, int mouseY, int btnX1, int btnY1, int btnX2, int btnY2) {
+    return (mouseX > btnX1 && mouseX < btnX2 && mouseY > btnY1 && mouseY < btnY2);
 }
