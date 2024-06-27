@@ -4,11 +4,14 @@
 UI::UI(int width, int height) : width(width), height(height) {}
 
 void UI::drawStartUI(bool playerSelected, bool difficultySelected, bool playerMode, Difficulty difficulty) {
-    setfillcolor(DARKGRAY);  // 设置背景颜色为深灰色
-    solidrectangle(0, 0, width + 200, height);
+    setbkcolor(RGB(255, 255, 0));  // 设置背景颜色为黄色
+    cleardevice();
+
+    setbkmode(TRANSPARENT);  // 设置文字背景模式为透明
+    settextcolor(BLACK);  // 设置文字颜色为黑色
 
     // 绘制玩家选择框
-    setfillcolor(LIGHTGRAY);
+    setfillcolor(RGB(255, 165, 0));  // 修改选择框背景颜色为橙色
     solidrectangle((width + 200) / 2 - 80, 50, (width + 200) / 2 + 80, 200);
     outtextxy((width + 200) / 2 - 40, 60, _T("选择模式"));
 
@@ -21,7 +24,6 @@ void UI::drawStartUI(bool playerSelected, bool difficultySelected, bool playerMo
     outtextxy((width + 200) / 2 - 40, 155, _T("电脑玩"));
 
     // 绘制难度选择框
-    setfillcolor(LIGHTGRAY);
     solidrectangle((width + 200) / 2 - 80, 250, (width + 200) / 2 + 80, 400);
     outtextxy((width + 200) / 2 - 40, 260, _T("选择难度"));
 

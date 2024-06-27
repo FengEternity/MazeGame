@@ -40,7 +40,9 @@ void Maze::generateMaze(int r, int c) {
 }
 
 void Maze::drawMaze() {
-    setfillcolor(RGB(255, 165, 0));
+    setbkcolor(RGB(255, 165, 0));  // 设置背景颜色为橙色
+    cleardevice();  // 清除屏幕
+    setfillcolor(BLACK);
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             if (maze[i][j] == 1) {
@@ -50,7 +52,6 @@ void Maze::drawMaze() {
     }
     setfillcolor(WHITE);
     solidrectangle(0, 0, CELL_SIZE, CELL_SIZE); // 起点
-    setfillcolor(GREEN);
     solidrectangle((cols - 1) * CELL_SIZE, (rows - 1) * CELL_SIZE, cols * CELL_SIZE, rows * CELL_SIZE); // 终点
 }
 

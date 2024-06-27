@@ -10,7 +10,7 @@
 #define CELL_SIZE 20
 
 int main() {
-    initgraph(WIDTH + 200, HEIGHT); // 增加UI区域
+    initgraph(WIDTH + 200 , HEIGHT); // 增加UI区域
 
     Difficulty difficulty = MEDIUM;
     bool playerMode = true; // true 表示玩家玩，false 表示电脑玩
