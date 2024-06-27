@@ -15,6 +15,26 @@ Maze::Maze(int rows, int cols, Difficulty difficulty) : rows(rows), cols(cols), 
     initMaze();
 }
 
+Maze::Maze(Difficulty difficulty) : difficulty(difficulty) {
+    // 根据难度设置行数和列数
+    switch (difficulty) {
+    case EASY:
+        rows = 20;
+        cols = 20;
+        break;
+    case MEDIUM:
+        rows = 30;
+        cols = 30;
+        break;
+    case HARD:
+        rows = 50;
+        cols = 50;
+        break;
+    }
+    maze = std::vector<std::vector<int>>(rows, std::vector<int>(cols, 1));
+    initMaze();
+}
+
 void Maze::initMaze() {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {

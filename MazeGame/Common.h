@@ -1,3 +1,3 @@
 #pragma once
 
-enum Difficulty { EASY = 10, MEDIUM = 20, HARD = 30 };
+enum Difficulty { EASY = 10, MEDIUM = 25, HARD = 50 };
