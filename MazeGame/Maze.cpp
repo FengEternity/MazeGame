@@ -27,7 +27,7 @@ void Maze::generateMaze(int r, int c) {
     std::srand(std::time(nullptr));
     carveMaze(r, c, 2);  // 使用步长2进行迷宫生成
     maze[0][0] = 0;  // 确保起点为可行路径
-    maze[rows - 1][cols - 1] = 0;  // 确保终点为可行路径
+    maze[rows - 3][cols - 3] = 0;  // 确保终点为可行路径
 
     // 输出迷宫信息进行调试
     std::cout << "Generated maze:\n";
