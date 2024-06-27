@@ -1,5 +1,5 @@
 #pragma once
-#include "Common.h"  // 添加这一行
+#include "Common.h"
 
 class UI {
 public:
