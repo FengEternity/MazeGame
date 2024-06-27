@@ -120,7 +120,7 @@ void Player::autoMove() {
         path.pop();  // 移除已走过的路径
 
         // 添加延迟以限制移动速度
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));  // 延迟200毫秒
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));  // 延迟200毫秒
     }
 }
 
