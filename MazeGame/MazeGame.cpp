@@ -3,6 +3,7 @@
 #include "Maze.h"
 #include "Player.h"
 #include "UI.h"
+#include "Common.h"  // 添加这一行
 #include <tchar.h>  // 添加这个头文件
 
 #define WIDTH  600  // 调整迷宫区域宽度
@@ -10,7 +11,7 @@
 #define CELL_SIZE 20
 
 int main() {
-    initgraph(WIDTH , HEIGHT); // 增加UI区域
+    initgraph(WIDTH, HEIGHT); // 增加UI区域
 
     Difficulty difficulty = MEDIUM;
     bool playerMode = true; // true 表示玩家玩，false 表示电脑玩
@@ -63,7 +64,7 @@ int main() {
     bool playAgain = false;  // 新增变量
     do {
         // 初始化迷宫和玩家
-        Maze maze(WIDTH / CELL_SIZE, HEIGHT / CELL_SIZE);
+        Maze maze(WIDTH / CELL_SIZE, HEIGHT / CELL_SIZE, difficulty);
         maze.generateMaze(1, 1);
 
         Player player(maze, 1, 1);

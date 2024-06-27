@@ -4,10 +4,14 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
+#include <stack>
+#include <utility>
+#include <algorithm>
+#include <random>
 
 #define CELL_SIZE 20
 
-Maze::Maze(int rows, int cols) : rows(rows), cols(cols), maze(rows, std::vector<int>(cols, 1)) {
+Maze::Maze(int rows, int cols, Difficulty difficulty) : rows(rows), cols(cols), difficulty(difficulty), maze(rows, std::vector<int>(cols, 1)) {
     initMaze();
 }
 
@@ -20,29 +24,46 @@ void Maze::initMaze() {
 }
 
 void Maze::generateMaze(int r, int c) {
-    maze[r][c] = 0; // 0 表示路
+    std::srand(std::time(nullptr));
+    carveMaze(r, c, 2);  // 使用步长2进行迷宫生成
+    maze[0][0] = 0;  // 确保起点为可行路径
+    maze[rows - 1][cols - 1] = 0;  // 确保终点为可行路径
+}
 
-    int directions[4][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
-    for (int i = 0; i < 4; i++) {
-        int randIndex = rand() % 4;
-        std::swap(directions[i], directions[randIndex]);
-    }
+void Maze::carveMaze(int r, int c, int step) {
+    std::stack<std::pair<int, int>> stack;
+    stack.push({ r, c });
+    maze[r][c] = 0;  // 设置起点为通路
 
-    for (int i = 0; i < 4; i++) {
-        int nr = r + directions[i][0] * 2;
-        int nc = c + directions[i][1] * 2;
+    std::random_device rd;
+    std::mt19937 g(rd());
 
-        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && maze[nr][nc] == 1) {
-            maze[r + directions[i][0]][c + directions[i][1]] = 0;
-            generateMaze(nr, nc);
+    while (!stack.empty()) {
+        auto [cr, cc] = stack.top();
+        stack.pop();
+
+        int directions[4][2] = { {-step, 0}, {step, 0}, {0, -step}, {0, step} };
+        std::shuffle(std::begin(directions), std::end(directions), g);  // 使用 std::shuffle
+
+        for (auto& dir : directions) {
+            int nr = cr + dir[0];
+            int nc = cc + dir[1];
+            int midr = cr + dir[0] / 2;
+            int midc = cc + dir[1] / 2;
+
+            if (nr > 0 && nr < rows - 1 && nc > 0 && nc < cols - 1 && maze[nr][nc] == 1) {
+                maze[nr][nc] = 0;  // 设置新的终点为通路
+                maze[midr][midc] = 0;  // 设置中间点为通路
+                stack.push({ nr, nc });
+            }
         }
     }
 }
 
 void Maze::drawMaze() {
-    setbkcolor(RGB(255, 165, 0));  // 设置背景颜色为橙色
+    setbkcolor(RGB(0, 0, 0));  // 设置背景颜色为黑色
     cleardevice();  // 清除屏幕
-    setfillcolor(BLACK);
+    setfillcolor(RGB(255, 165, 0));  // 设置填充颜色为橙色
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             if (maze[i][j] == 1) {
@@ -52,7 +73,7 @@ void Maze::drawMaze() {
     }
     setfillcolor(WHITE);
     solidrectangle(0, 0, CELL_SIZE, CELL_SIZE); // 起点
-    solidrectangle((cols - 1) * CELL_SIZE, (rows - 1) * CELL_SIZE, cols * CELL_SIZE, rows * CELL_SIZE); // 终点
+    solidrectangle((cols - 3) * CELL_SIZE, (rows - 3) * CELL_SIZE, (cols - 2) * CELL_SIZE, (rows - 2) * CELL_SIZE); // 终点
 }
 
 void Maze::saveMaze() {

@@ -1,6 +1,5 @@
 #pragma once
-
-enum Difficulty { EASY = 10, MEDIUM = 20, HARD = 30 };  // 确保在头文件中定义 Difficulty 枚举类型
+#include "Common.h"  // 添加这一行
 
 class UI {
 public:
