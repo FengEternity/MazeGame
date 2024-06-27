@@ -1,15 +1,15 @@
 #include "Player.h"
 #include <graphics.h>
-#include <queue>
-#include <unordered_map>
-#include <algorithm>
 #include <iostream>  // 用于调试输出
+#include <thread>    // 用于添加延迟
+#include <chrono>    // 用于添加延迟
 
 #define CELL_SIZE 20  // 单元格大小
 
-Player::Player(Maze& maze, int startX, int startY) : maze(maze), x(startX), y(startY), moved(false) {
+Player::Player(Maze& maze, int startX, int startY) : maze(maze), x(startX), y(startY), moved(false), pathFound(false) {
     std::cout << "Initializing Player at (" << startX << ", " << startY << ")...\n";  // 输出调试信息
-    findPath();  // 初始化时找到路径
+    explorationQueue.push({ x, y });  // 初始化时将起点加入队列
+    cameFrom[x * maze.getCols() + y] = { -1, -1 };
     std::cout << "Player initialized.\n";  // 输出调试信息
 }
 
@@ -57,28 +57,16 @@ bool Player::isAtEnd() {
     return (x == maze.getRows() - 3 && y == maze.getCols() - 3);  // 判断是否到达终点
 }
 
-void Player::findPath() {
-    std::cout << "Finding path...\n";
+void Player::explore() {
     const auto& mazeData = maze.getMaze();
     int rows = maze.getRows();
     int cols = maze.getCols();
-    std::queue<std::pair<int, int>> q;
-    std::unordered_map<int, std::pair<int, int>> cameFrom;
-    q.push({ x, y });
-    cameFrom[x * cols + y] = { -1, -1 };
 
-    int directions[4][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };  // 定义四个方向
+    if (!explorationQueue.empty() && !pathFound) {
+        auto [cx, cy] = explorationQueue.front();
+        explorationQueue.pop();
 
-    bool pathFound = false;
-
-    while (!q.empty()) {
-        auto [cx, cy] = q.front();
-        q.pop();
-
-        if (cx == rows - 3 && cy == cols - 3) {
-            pathFound = true;
-            break;
-        }
+        int directions[4][2] = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };  // 定义四个方向
 
         for (auto& dir : directions) {
             int nx = cx + dir[0];
@@ -86,38 +74,37 @@ void Player::findPath() {
 
             if (nx >= 0 && nx < rows && ny >= 0 && ny < cols && mazeData[nx][ny] == 0) {
                 if (cameFrom.find(nx * cols + ny) == cameFrom.end()) {
-                    q.push({ nx, ny });
+                    explorationQueue.push({ nx, ny });
                     cameFrom[nx * cols + ny] = { cx, cy };
+
+                    if (nx == rows - 3 && ny == cols - 3) {
+                        pathFound = true;
+                        break;
+                    }
                 }
             }
         }
     }
 
-    if (!pathFound) {
-        std::cout << "No path found from start to end.\n";
-        return;
-    }
-
-    int cx = rows - 3, cy = cols - 3;
-    while (cx != -1 && cy != -1) {
-        path.push_back({ cx, cy });
-        std::tie(cx, cy) = cameFrom[cx * cols + cy];
-    }
-
-    std::reverse(path.begin(), path.end());
-
-    std::cout << "Path found:\n";
-    for (const auto& p : path) {
-        std::cout << "(" << p.first << ", " << p.second << ")\n";
+    if (pathFound) {
+        path = std::stack<std::pair<int, int>>();  // 清空栈
+        int cx = rows - 3, cy = cols - 3;
+        while (cx != -1 && cy != -1) {
+            path.push({ cx, cy });
+            std::tie(cx, cy) = cameFrom[cx * cols + cy];
+        }
     }
 }
 
 void Player::autoMove() {
     moved = false; // 重置移动状态
 
-    if (!path.empty()) {
-        int newX = path.front().first;
-        int newY = path.front().second;
+    if (!pathFound) {
+        explore();  // 如果路径未找到，继续探索
+    }
+    else if (!path.empty()) {
+        int newX = path.top().first;
+        int newY = path.top().second;
 
         if (newX != x || newY != y) {
             x = newX;
@@ -125,10 +112,10 @@ void Player::autoMove() {
             moved = true;
         }
 
-        path.erase(path.begin());  // 移除已走过的路径
-    }
-    else {
-        findPath();  // 如果路径为空，重新查找路径
+        path.pop();  // 移除已走过的路径
+
+        // 添加延迟以限制移动速度
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));  // 延迟200毫秒
     }
 }
 
