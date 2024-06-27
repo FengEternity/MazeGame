@@ -99,7 +99,6 @@ int main() {
             cleardevice();  // 清除屏幕
             maze.drawMaze();  // 绘制迷宫
             player.drawPlayer();  // 绘制玩家
-            std::cout << "Drawing player at (" << player.getX() << ", " << player.getY() << ").\n";  // 输出玩家位置
 
             if (playerMode) {
                 // 玩家模式下处理键盘输入
@@ -119,7 +118,10 @@ int main() {
             else {
                 // 电脑模式下自动移动玩家
                 player.autoMove();
-                std::cout << "Player auto-moved to (" << player.getX() << ", " << player.getY() << ").\n";  // 输出调试信息
+            }
+
+            if (player.hasMoved()) {  // 仅在玩家移动时输出调试信息
+                std::cout << "Drawing player at (" << player.getX() << ", " << player.getY() << ").\n";
             }
 
             if (player.isAtEnd()) {
