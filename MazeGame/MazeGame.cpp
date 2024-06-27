@@ -10,7 +10,7 @@
 #define CELL_SIZE 20
 
 int main() {
-    initgraph(WIDTH + 200 , HEIGHT); // 增加UI区域
+    initgraph(WIDTH , HEIGHT); // 增加UI区域
 
     Difficulty difficulty = MEDIUM;
     bool playerMode = true; // true 表示玩家玩，false 表示电脑玩
@@ -26,32 +26,33 @@ int main() {
         FlushBatchDraw();
 
         if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {  // 左键点击
+
             POINT mousePos;
             GetCursorPos(&mousePos);
             ScreenToClient(GetHWnd(), &mousePos);  // 获取相对窗口的位置
 
-            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 100, (WIDTH + 200) / 2 + 60, 130)) {
+            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH) / 2 - 60, 100, (WIDTH) / 2 + 60, 130)) {
                 playerMode = true; // 玩家玩
                 playerSelected = true;
             }
-            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 150, (WIDTH + 200) / 2 + 60, 180)) {
+            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH) / 2 - 60, 150, (WIDTH) / 2 + 60, 180)) {
                 playerMode = false; // 电脑玩
                 playerSelected = true;
             }
-            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 300, (WIDTH + 200) / 2 + 60, 330)) {
+            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH) / 2 - 60, 300, (WIDTH) / 2 + 60, 330)) {
                 difficulty = EASY; // 简单难度
                 difficultySelected = true;
             }
-            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 350, (WIDTH + 200) / 2 + 60, 380)) {
+            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH) / 2 - 60, 350, (WIDTH) / 2 + 60, 380)) {
                 difficulty = MEDIUM; // 中等难度
                 difficultySelected = true;
             }
-            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 400, (WIDTH + 200) / 2 + 60, 430)) {
+            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH) / 2 - 60, 400, (WIDTH) / 2 + 60, 430)) {
                 difficulty = HARD; // 困难难度
                 difficultySelected = true;
             }
             if (playerSelected && difficultySelected &&
-                ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 500, (WIDTH + 200) / 2 + 60, 530)) {
+                ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH) / 2 - 60, 500, (WIDTH) / 2 + 60, 530)) {
                 // 开始游戏按钮被点击，且两个选项已选择
                 break;
             }
