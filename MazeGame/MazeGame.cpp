@@ -23,13 +23,13 @@ int main() {
         Player player(maze, 1, 1);
         maze.drawMaze();
 
-        // 等待用户点击开始游戏按钮
-        while (true) {
-            cleardevice();
-            maze.drawMaze();
-            ui.drawUI();
-            FlushBatchDraw();
+        // 只绘制一次UI界面，等待用户点击开始游戏按钮
+        cleardevice();
+        maze.drawMaze();
+        ui.drawUI();
+        FlushBatchDraw();
 
+        while (true) {
             if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {  // 左键点击
                 POINT mousePos;
                 GetCursorPos(&mousePos);
