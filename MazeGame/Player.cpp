@@ -40,7 +40,7 @@ void Player::movePlayer(char direction) {
 }
 
 bool Player::isAtEnd() {
-    return (x == maze.getRows() - 1 && y == maze.getCols() - 1);  // 判断是否到达终点
+    return (x == maze.getRows() - 3 && y == maze.getCols() - 3);  // 判断是否到达终点
 }
 
 void Player::findPath() {
