@@ -12,7 +12,52 @@
 int main() {
     initgraph(WIDTH + 200, HEIGHT); // 增加UI区域
 
+    Difficulty difficulty = MEDIUM;
+    bool playerMode = true; // true 表示玩家玩，false 表示电脑玩
+    bool playerSelected = false;
+    bool difficultySelected = false;
+
     UI ui(WIDTH, HEIGHT);
+
+    // 显示游戏开始界面
+    while (true) {
+        cleardevice();
+        ui.drawStartUI(playerSelected, difficultySelected, playerMode, difficulty);
+        FlushBatchDraw();
+
+        if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {  // 左键点击
+            POINT mousePos;
+            GetCursorPos(&mousePos);
+            ScreenToClient(GetHWnd(), &mousePos);  // 获取相对窗口的位置
+
+            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 100, (WIDTH + 200) / 2 + 60, 130)) {
+                playerMode = true; // 玩家玩
+                playerSelected = true;
+            }
+            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 150, (WIDTH + 200) / 2 + 60, 180)) {
+                playerMode = false; // 电脑玩
+                playerSelected = true;
+            }
+            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 300, (WIDTH + 200) / 2 + 60, 330)) {
+                difficulty = EASY; // 简单难度
+                difficultySelected = true;
+            }
+            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 350, (WIDTH + 200) / 2 + 60, 380)) {
+                difficulty = MEDIUM; // 中等难度
+                difficultySelected = true;
+            }
+            if (ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 400, (WIDTH + 200) / 2 + 60, 430)) {
+                difficulty = HARD; // 困难难度
+                difficultySelected = true;
+            }
+            if (playerSelected && difficultySelected &&
+                ui.isButtonClicked(mousePos.x, mousePos.y, (WIDTH + 200) / 2 - 60, 500, (WIDTH + 200) / 2 + 60, 530)) {
+                // 开始游戏按钮被点击，且两个选项已选择
+                break;
+            }
+        }
+        Sleep(100);  // 避免CPU过度占用
+    }
 
     bool playAgain = false;  // 新增变量
     do {
@@ -23,31 +68,10 @@ int main() {
         Player player(maze, 1, 1);
         maze.drawMaze();
 
-        // 只绘制一次UI界面，等待用户点击开始游戏按钮
-        cleardevice();
-        maze.drawMaze();
-        ui.drawUI();
-        FlushBatchDraw();
-
-        while (true) {
-            if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {  // 左键点击
-                POINT mousePos;
-                GetCursorPos(&mousePos);
-                ScreenToClient(GetHWnd(), &mousePos);  // 获取相对窗口的位置
-
-                if (ui.isButtonClicked(mousePos.x, mousePos.y, WIDTH + 20, 50, WIDTH + 180, 100)) {
-                    // 开始游戏按钮被点击
-                    break;
-                }
-            }
-            Sleep(100);  // 避免CPU过度占用
-        }
-
         BeginBatchDraw();  // 开始双缓冲绘图
         while (true) {
             cleardevice();
             maze.drawMaze();
-            ui.drawUI();
             player.drawPlayer();
 
             // 使用GetAsyncKeyState处理键盘输入

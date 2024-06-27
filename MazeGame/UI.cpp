@@ -3,23 +3,44 @@
 
 UI::UI(int width, int height) : width(width), height(height) {}
 
-void UI::drawUI() {
+void UI::drawStartUI(bool playerSelected, bool difficultySelected, bool playerMode, Difficulty difficulty) {
+    setfillcolor(DARKGRAY);  // 设置背景颜色为深灰色
+    solidrectangle(0, 0, width + 200, height);
+
+    // 绘制玩家选择框
     setfillcolor(LIGHTGRAY);
-    solidrectangle(width, 0, width + 200, height);
+    solidrectangle((width + 200) / 2 - 80, 50, (width + 200) / 2 + 80, 200);
+    outtextxy((width + 200) / 2 - 40, 60, _T("选择模式"));
 
-    // 绘制按钮
+    setfillcolor(playerSelected && playerMode ? RGB(0, 255, 0) : RGB(255, 165, 0));  // 玩家玩选择
+    solidrectangle((width + 200) / 2 - 60, 100, (width + 200) / 2 + 60, 130);
+    outtextxy((width + 200) / 2 - 40, 105, _T("玩家玩"));
+
+    setfillcolor(playerSelected && !playerMode ? RGB(0, 255, 0) : RGB(255, 165, 0));  // 电脑玩选择
+    solidrectangle((width + 200) / 2 - 60, 150, (width + 200) / 2 + 60, 180);
+    outtextxy((width + 200) / 2 - 40, 155, _T("电脑玩"));
+
+    // 绘制难度选择框
+    setfillcolor(LIGHTGRAY);
+    solidrectangle((width + 200) / 2 - 80, 250, (width + 200) / 2 + 80, 400);
+    outtextxy((width + 200) / 2 - 40, 260, _T("选择难度"));
+
+    setfillcolor(difficultySelected && difficulty == EASY ? RGB(0, 255, 0) : RGB(255, 165, 0));  // 简单难度选择
+    solidrectangle((width + 200) / 2 - 60, 300, (width + 200) / 2 + 60, 330);
+    outtextxy((width + 200) / 2 - 20, 305, _T("简单"));
+
+    setfillcolor(difficultySelected && difficulty == MEDIUM ? RGB(0, 255, 0) : RGB(255, 165, 0));  // 中等难度选择
+    solidrectangle((width + 200) / 2 - 60, 350, (width + 200) / 2 + 60, 380);
+    outtextxy((width + 200) / 2 - 20, 355, _T("中等"));
+
+    setfillcolor(difficultySelected && difficulty == HARD ? RGB(0, 255, 0) : RGB(255, 165, 0));  // 困难难度选择
+    solidrectangle((width + 200) / 2 - 60, 400, (width + 200) / 2 + 60, 430);
+    outtextxy((width + 200) / 2 - 20, 405, _T("困难"));
+
+    // 绘制开始游戏按钮
     setfillcolor(RGB(255, 165, 0));
-    solidrectangle(width + 20, 50, width + 180, 100);
-    outtextxy(width + 60, 65, _T("开始游戏"));
-
-    solidrectangle(width + 20, 150, width + 180, 200);
-    outtextxy(width + 60, 165, _T("电脑玩"));
-
-    solidrectangle(width + 20, 250, width + 180, 300);
-    outtextxy(width + 60, 265, _T("玩家玩"));
-
-    solidrectangle(width + 20, 350, width + 180, 400);
-    outtextxy(width + 60, 365, _T("退出游戏"));
+    solidrectangle((width + 200) / 2 - 60, 500, (width + 200) / 2 + 60, 530);
+    outtextxy((width + 200) / 2 - 40, 505, _T("开始游戏"));
 }
 
 bool UI::isButtonClicked(int mouseX, int mouseY, int btnX1, int btnY1, int btnX2, int btnY2) {
