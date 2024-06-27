@@ -77,6 +77,11 @@ void Player::explore() {
                     explorationQueue.push({ nx, ny });
                     cameFrom[nx * cols + ny] = { cx, cy };
 
+                    // 绘制探索过程
+                    setfillcolor(BLUE);  // 设置颜色为蓝色
+                    solidrectangle(ny * CELL_SIZE, nx * CELL_SIZE, (ny + 1) * CELL_SIZE, (nx + 1) * CELL_SIZE);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(50));  // 延迟50毫秒
+
                     if (nx == rows - 3 && ny == cols - 3) {
                         pathFound = true;
                         break;
