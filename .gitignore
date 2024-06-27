@@ -1,0 +1,27 @@
+# 忽略 ARM64 文件夹
+/MazeGame/ARM64/
+
+# 忽略 x64 文件夹
+/MazeGame/x64/
+
+# 忽略编译输出文件
+*.o
+*.obj
+*.exe
+*.dll
+
+# 忽略临时文件
+*.tmp
+*.log
+
+# 忽略 IDE 配置文件
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# 忽略依赖文件夹
+node_modules/
+vendor/
