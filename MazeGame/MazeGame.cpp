@@ -90,7 +90,7 @@ int main() {
         }
     } while (playAgain);
 
-    _getch();
+    int c = _getch();  // 处理返回值，但不使用
     closegraph();
     return 0;
 }
