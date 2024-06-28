@@ -6,8 +6,13 @@
 #include "Common.h"
 #include <tchar.h>
 #include <iostream>  // 用于调试输出
+#include <thread>    // 用于添加延迟
+#include <chrono>    // 用于添加延迟
 
 #define CELL_SIZE 20  // 定义迷宫单元格的大小
+
+void showVictoryMessage(int width, int height);
+void showOptions(int width, int height, bool& playAgain, bool& goToStart, bool& exitGame);
 
 int main() {
     Difficulty difficulty = MEDIUM;  // 初始化难度为中等
@@ -81,6 +86,8 @@ int main() {
     initgraph(width, height);  // 重新初始化图形界面，设置窗口大小
 
     bool playAgain = false;  // 是否重新开始游戏的标志
+    bool goToStart = false;  // 是否返回开始界面的标志
+    bool exitGame = false;   // 是否退出游戏的标志
     do {
         std::cout << "Initializing maze and player...\n";  // 输出调试信息
         Maze maze(rows, cols, difficulty);  // 创建迷宫对象
@@ -126,9 +133,7 @@ int main() {
 
             if (player.isAtEnd()) {
                 // 玩家到达终点，显示胜利信息
-                LPCTSTR message = _T("你赢了！");
-                outtextxy(width / 2 - 30, height / 2, message);
-                EndBatchDraw();  // 结束双缓冲绘图
+                showVictoryMessage(width, height);  // 显示“你赢了！”消息
                 std::cout << "Player reached the end.\n";  // 输出调试信息
                 break;
             }
@@ -139,20 +144,69 @@ int main() {
         EndBatchDraw();  // 结束双缓冲绘图
 
         // 等待用户选择重玩或退出
-        while (true) {
-            if (GetAsyncKeyState(VK_RETURN) & 0x8000) {  // 按回车键重玩
-                playAgain = true;
-                break;
-            }
-            if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {  // 按ESC键退出
-                playAgain = false;
-                break;
-            }
-            Sleep(100);  // 避免CPU过度占用
-        }
-    } while (playAgain);  // 根据用户选择判断是否重新开始游戏
+        showOptions(width, height, playAgain, goToStart, exitGame);
 
-    int c = _getch();  // 等待用户输入，防止程序立即退出
+        if (exitGame) {
+            break;  // 退出游戏
+        }
+
+    } while (playAgain || goToStart);  // 根据用户选择判断是否重新开始游戏或返回首页
+
     closegraph();  // 关闭图形界面
     return 0;
+}
+
+void showVictoryMessage(int width, int height) {
+    cleardevice();
+    settextstyle(40, 0, _T("Arial"));  // 设置字体样式
+    settextcolor(WHITE);
+    outtextxy(width / 2 - 100, height / 2 - 20, _T("你赢了！"));
+    FlushBatchDraw();
+    std::this_thread::sleep_for(std::chrono::seconds(3));  // 显示3秒钟
+}
+
+void showOptions(int width, int height, bool& playAgain, bool& goToStart, bool& exitGame) {
+    cleardevice();
+    settextstyle(30, 0, _T("Arial"));
+    settextcolor(WHITE);
+    // 绘制按钮
+    solidrectangle(width / 2 - 100, height / 2, width / 2 + 100, height / 2 + 30);
+    solidrectangle(width / 2 - 100, height / 2 + 40, width / 2 + 100, height / 2 + 70);
+    solidrectangle(width / 2 - 100, height / 2 + 80, width / 2 + 100, height / 2 + 110);
+
+    // 绘制按钮文本
+    outtextxy(width / 2 - 60, height / 2 + 5, _T("重新开始"));
+    outtextxy(width / 2 - 60, height / 2 + 45, _T("回到首页"));
+    outtextxy(width / 2 - 60, height / 2 + 85, _T("退出游戏"));
+    FlushBatchDraw();
+
+    while (true) {
+        if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {  // 检测鼠标左键点击
+            POINT mousePos;
+            GetCursorPos(&mousePos);
+            ScreenToClient(GetHWnd(), &mousePos);  // 获取鼠标点击位置，转换为窗口坐标
+
+            if (mousePos.x > width / 2 - 100 && mousePos.x < width / 2 + 100) {
+                if (mousePos.y > height / 2 && mousePos.y < height / 2 + 30) {
+                    playAgain = true;
+                    goToStart = false;
+                    exitGame = false;
+                    break;
+                }
+                if (mousePos.y > height / 2 + 40 && mousePos.y < height / 2 + 70) {
+                    playAgain = false;
+                    goToStart = true;
+                    exitGame = false;
+                    break;
+                }
+                if (mousePos.y > height / 2 + 80 && mousePos.y < height / 2 + 110) {
+                    playAgain = false;
+                    goToStart = false;
+                    exitGame = true;
+                    break;
+                }
+            }
+        }
+        Sleep(100);  // 避免CPU过度占用
+    }
 }
