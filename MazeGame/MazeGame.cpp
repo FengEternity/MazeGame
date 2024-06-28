@@ -1,5 +1,7 @@
 #include <graphics.h>
 #include <conio.h>
+#include <windows.h>
+#include <mmsystem.h>
 #include "Maze.h"
 #include "Player.h"
 #include "UI.h"
@@ -9,7 +11,44 @@
 #include <thread>    // 用于添加延迟
 #include <chrono>    // 用于添加延迟
 
+#pragma comment(lib, "winmm.lib")  // 链接到winmm.lib
+
 #define CELL_SIZE 20  // 定义迷宫单元格的大小
+
+void playSound(const char* filename, bool loop = false) {
+    char command[256];
+    sprintf_s(command, "open %s alias %s", filename, filename);
+
+    // 将 command 转换为宽字符字符串
+    wchar_t wCommand[256];
+    MultiByteToWideChar(CP_ACP, 0, command, -1, wCommand, 256);
+
+    // 使用宽字符字符串调用 mciSendStringW
+    mciSendStringW(wCommand, NULL, 0, NULL);
+
+    sprintf_s(command, "play %s", filename);
+    if (loop) {
+        strcat_s(command, " repeat");
+    }
+
+    // 再次转换 command 为宽字符字符串
+    MultiByteToWideChar(CP_ACP, 0, command, -1, wCommand, 256);
+
+    // 使用宽字符字符串调用 mciSendStringW
+    mciSendStringW(wCommand, NULL, 0, NULL);
+}
+
+void stopSound(const char* filename) {
+    char command[256];
+    sprintf_s(command, "close %s", filename);
+
+    // 将 command 转换为宽字符字符串
+    wchar_t wCommand[256];
+    MultiByteToWideChar(CP_ACP, 0, command, -1, wCommand, 256);
+
+    // 使用宽字符字符串调用 mciSendStringW
+    mciSendStringW(wCommand, NULL, 0, NULL);
+}
 
 void showVictoryMessage(int width, int height);
 void showOptions(int width, int height, bool& playAgain, bool& goToStart, bool& exitGame);
@@ -35,6 +74,9 @@ int main() {
     bool playAgain = false;  // 是否重新开始游戏的标志
     bool goToStart = true;  // 是否返回开始界面的标志
     bool exitGame = false;   // 是否退出游戏的标志
+
+    // 播放背景音乐
+    // playSound("background_music.mp3", true);
 
     // 主循环处理游戏逻辑
     while (true) {
@@ -85,6 +127,9 @@ int main() {
                     ui.isButtonClicked(mousePos.x, mousePos.y, (width) / 2 - 60, 500, (width) / 2 + 60, 530)) {
                     std::cout << "Starting game...\n";  // 输出调试信息
                     goToStart = false;
+                    // 播放游戏开始音效
+                    playSound("start_game.mp3");
+                    playSound("background_music.mp3", true);
                     break;  // 开始游戏，跳出循环
                 }
             }
@@ -118,20 +163,25 @@ int main() {
                 // 玩家模式下处理键盘输入
                 if (GetAsyncKeyState(VK_UP) & 0x8000) {
                     player.movePlayer('w');
+                    playSound("move.wav");  // 播放移动音效
                 }
                 if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
                     player.movePlayer('s');
+                    playSound("move.wav");  // 播放移动音效
                 }
                 if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
                     player.movePlayer('a');
+                    playSound("move.wav");  // 播放移动音效
                 }
                 if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
                     player.movePlayer('d');
+                    playSound("move.wav");  // 播放移动音效
                 }
             }
             else {
                 // 电脑模式下自动移动玩家
                 player.autoMove();
+                playSound("auto_move.wav");  // 播放自动移动音效
             }
 
             if (player.hasMoved()) {  // 仅在玩家移动时输出调试信息
@@ -140,6 +190,8 @@ int main() {
 
             if (player.isAtEnd()) {
                 // 玩家到达终点，显示胜利信息
+                stopSound("background_music.mp3");
+                playSound("victory.mp3");  // 播放胜利音效
                 showVictoryMessage(width, height);  // 显示“你赢了！”消息
                 std::cout << "Player reached the end.\n";  // 输出调试信息
                 break;
@@ -179,6 +231,9 @@ int main() {
             ui = UI(width, height);  // 重新创建UI对象
         }
     }
+
+    // 停止背景音乐
+    // stopSound("background_music.mp3");
 
     closegraph();  // 关闭图形界面
     return 0;
