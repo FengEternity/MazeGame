@@ -4,7 +4,7 @@
 
 程序运行截图如下，
 
-<img width="500" alt="image" src="https://github.com/FengEternity/MazeGame/assets/114133472/dd98404b-c672-4826-a64c-b4e4de1b45ed">
+<center><img width="500" alt="image" src="https://github.com/FengEternity/MazeGame/assets/114133472/dd98404b-c672-4826-a64c-b4e4de1b45ed"></center>
 
 ## 功能
 
