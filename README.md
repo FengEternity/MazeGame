@@ -3,6 +3,7 @@
 这是一个用C++开发的迷宫小游戏，具有图形界面和背景音乐。玩家可以选择不同的难度和模式（玩家玩或电脑玩），并通过键盘或自动移动来完成迷宫。
 
 程序运行截图如下，
+
 <img width="601" alt="image" src="https://github.com/FengEternity/MazeGame/assets/114133472/a25b2f0f-d96a-45ae-a489-fdc02ea04d93">
 <img width="500" alt="image" src="https://github.com/FengEternity/MazeGame/assets/114133472/dd98404b-c672-4826-a64c-b4e4de1b45ed">
 
